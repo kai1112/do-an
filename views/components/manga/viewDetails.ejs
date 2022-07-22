@@ -4,6 +4,7 @@
 <td><%= manga.category %></td>
 <td><%= manga.author %></td>
 <td><%= manga.description %></td>
+<button onclick="addFollow('<%= followed._id%>')">follow manga</button>
 <button onclick="createChapter('<%= manga._id %>')">create chapter</button>
 
 <!-- chapter -->

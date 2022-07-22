@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const controller = require("../controllers/libraryController");
 
-router.get("/allLibraries", controller.viewAllLibrary);
-router.get("/:id/viewLibrary", controller.viewLibrary);
+router.post("/createLibrary", controller.createLibrary);
+router.delete("/deleteLibrary", controller.deleteLibrary);
 
 module.exports = router;

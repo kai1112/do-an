@@ -12,15 +12,15 @@ module.exports.createComment = async (req, res) => {
   try {
     const cookies = req.cookies;
     const user = await UserModel.findOne({ token: cookies.user });
-    console.log(req.params.id);
-    console.log(user);
+    // console.log(req.params.id);
     if (user) {
       const comment = await CommentModel.create({
         userID: user.id,
         chapterID: req.body.chapterId,
         title: req.body.comment,
+        reaction: [],
       });
-      console.log(comment);
+      // console.log(comment);
     }
     res.json({
       message: "login success",

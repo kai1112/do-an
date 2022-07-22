@@ -1,7 +1,6 @@
 const UserModel = require("../model/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { viewAllManga } = require("./mangaController");
 // register user
 module.exports.showLogin = async (req, res) => {
   try {
@@ -45,7 +44,7 @@ module.exports.login = async (req, res) => {
     const data = await UserModel.findOne({
       username: req.body.username,
     });
-    console.log(data);
+    // console.log(data);
     if (data) {
       const checkPassword = await bcrypt.compare(
         req.body.password,
@@ -58,7 +57,7 @@ module.exports.login = async (req, res) => {
           { _id: data._id },
           { token: token }
         );
-        console.log(56, a);
+        // console.log(56, a);
         res.cookie("user", token, {
           expires: new Date(Date.now() + 6000000),
         });
@@ -93,7 +92,7 @@ module.exports.viewAllUsers = async (req, res) => {
 // edit user
 module.exports.editUser = async (req, res) => {
   const userID = req.params.id;
-  console.log(userID);
+  // console.log(userID);
   try {
     const user = await UserModel.findById(userID).lean();
     if (!user) {

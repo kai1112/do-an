@@ -2,6 +2,7 @@ const mongoose = require("./dbconnect");
 
 const LibrarySchema = mongoose.Schema(
   {
+    status: String,
     userID: {
       type: String,
       ref: "user",

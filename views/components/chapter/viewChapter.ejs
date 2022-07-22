@@ -3,15 +3,39 @@
 <input type="text" id="comments" placeholder="input comment" />
 <button onclick="addComment('<%= Chapter._id %>')">submit</button>
 <!-- view comments -->
-<% comments.map((comment, index) =>{%>
+<% for(let i = 0; i < comments.length; i++) { %>
 <td>
-  <p><%= comment.title %></p>
+  <p><%= users[i].username %></p>
+  <p><%= comments[i].title %></p>
+
+  <% if(comments[i].reaction != '') { if(user.id === reactions[i]) {%>
+
+  <button onclick="addReaction('<%= comments[i].id %>')">like 1</button>
+  <p><%= comments[i].reaction.length %></p>
+
+  <%} else { %>
+
+  <button onclick="addReaction('<%= comments[i].id %>')">like 2</button>
+  <p><%= comments[i].reaction.length %></p>
+
+  <%}} else{%>
+  <button onclick="addReaction('<%= comments[i].id %>')">like 3</button>
+
+  <p><%= comments[i].reaction.length %></p>
+  <%} %>
 </td>
-<%})%>
+<%}%>
+
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
   integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
+<script
+  src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+  integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+  crossorigin="anonymous"
+></script>
+
 <script src="/public/js/comment/createComment.js"></script>

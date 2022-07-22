@@ -3,8 +3,6 @@ const mongoose = require("./dbconnect");
 const CommentSchema = mongoose.Schema(
   {
     title: String,
-    reply: String,
-    like: Number,
     userID: {
       type: String,
       ref: "user",
@@ -13,6 +11,7 @@ const CommentSchema = mongoose.Schema(
       type: String,
       ref: "chapter",
     },
+    reaction: [String],
   },
   { collection: "Comment", timestamps: true }
 );

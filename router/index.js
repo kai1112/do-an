@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const controller = require("../controllers/userController");
 
-
 // using  user router
 const userRoute = require("./userRouter");
 router.use("/user", userRoute);
@@ -19,6 +18,10 @@ router.use("/chapter", chapterRoute);
 // using library
 const libraryRoute = require("./libraryRouter");
 router.use("/library", libraryRoute);
+
+// using reaction
+const reactionRoute = require("./reactionRouter");
+router.use("/reaction", reactionRoute);
 
 // using comment router
 const commentRoute = require("./commentRouter");

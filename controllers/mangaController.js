@@ -1,5 +1,7 @@
 const MangaModel = require("../model/manga.model");
 const ChapterModel = require("../model/chapter.model");
+const LibraryModel = require("../model/library.model");
+const UserModel = require("../model/user.model");
 const fs = require("fs");
 // view displays manga
 module.exports.viewCreateManga = async (req, res) => {
@@ -52,16 +54,38 @@ module.exports.viewAllManga = async (req, res) => {
 
 module.exports.viewDetails = async (req, res) => {
   try {
-    // console.log(req.params.id);
+    const cookies = req.cookies;
+    const user = await UserModel.findOne({ token: cookies.user });
     const manga = await MangaModel.findOne({ _id: req.params.id });
-    const chapter = await ChapterModel.find({ mangaID: req.params.id });
-    // console.log(chapter);
-    // console.log(manga);
-    // res.json({ manga });
+    const chapter = await ChapterModel.find({ MangaID: req.params.id });
+    const follows = await LibraryModel.find({ MangaID: req.params.id });
+
+    let followed = "";
+    for (let i = 0; i < follows.length; i++) {
+      if (user.id === follows[i].userID) {
+        followed = follows[i];
+      }
+    }
+
     if (!manga) {
       res.json("ko co manga nao");
     } else {
-      res.render("components/manga/viewDetails", { manga, chapter });
+      if (followed.userID == user.id && followed.MangaID == manga.id) {
+        res.render("components/manga/viewDetails", {
+          manga,
+          chapter,
+          followed,
+        });
+      } else {
+        let followed = {
+          id: "",
+        };
+        res.render("components/manga/viewDetails", {
+          manga,
+          chapter,
+          followed,
+        });
+      }
       //   // console.log(manga);
     }
   } catch (err) {
