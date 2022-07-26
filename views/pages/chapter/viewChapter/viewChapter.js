@@ -40,24 +40,18 @@ async function addReaction(commentID) {
     console.log(error);
     console.log("create failed");
   }
-  // }
-  //  else {
-  //   try {
-  //     let data1 = await $.ajax({
-  //       url: "/chapter/deleteReaction",
-  //       type: "delete",
-  //       data: {
-  //         userID,
-  //       },
-  //     });
-  //     console.log(data1);
-  //     console.log("delete successful");
-  //     window.location.href = `/chapter/${chapterID}/viewChapter`;
-  //   } catch (error) {
-  //     console.log(error);
-  //     console.log("create failed");
-  //   }
-  // }
+}
+
+async function paginationChapter(page, limit, id) {
+  try {
+    const data = await $.ajax({
+      url: `/chapter/${id}/paginationChapter?page=${page}&limit=${limit}`,
+      type: "GET",
+    });
+    window.location.href = `/chapter/${id}/viewChapter`;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // socket io cos thoi gian se lam them

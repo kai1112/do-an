@@ -1,0 +1,29 @@
+  <% for(let i = 0; i < listChapter.length; i++) {%>
+  <h1><%= listChapter[i].content %></h1>
+  <!-- create comment -->
+  <input type="text" id="comments" placeholder="input comment" />
+  <button onclick="addComment('<%= listChapter[i]._id %>')">submit</button>
+  <% } %>
+  <!-- view comments -->
+  <% for(let i = 0; i < comments.length; i++) { %>
+  <td>
+    <p><%= users[i].username %></p>
+    <p><%= comments[i].title %></p>
+
+    <% if(comments[i].reaction != '') { if(user.id === reactions[i]) {%>
+
+    <button onclick="addReaction('<%= comments[i].id %>')">like 1</button>
+    <p><%= comments[i].reaction.length %></p>
+
+    <%} else { %>
+
+    <button onclick="addReaction('<%= comments[i].id %>')">like 2</button>
+    <p><%= comments[i].reaction.length %></p>
+
+    <%}} else{%>
+    <button onclick="addReaction('<%= comments[i].id %>')">like 3</button>
+
+    <p><%= comments[i].reaction.length %></p>
+    <%} %>
+  </td>
+  <%}%>

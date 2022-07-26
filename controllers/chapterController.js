@@ -2,6 +2,7 @@ const ChapterModel = require("../model/chapter.model");
 const CommentModel = require("../model/comment.model");
 const MangaModel = require("../model/manga.model");
 const UserModel = require("../model/user.model");
+const paginationChapter = require("../service/paginationChapter");
 // create new chapter
 module.exports.createChapter = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ module.exports.createChapter = async (req, res) => {
 };
 // view chapter create
 module.exports.viewCreateChapter = async (req, res) => {
-  res.render("components/chapter/createChapter");
+  res.render("pages/chapter/createChapter/createChapter");
 };
 
 // edit chapter
@@ -45,7 +46,7 @@ module.exports.editChapter = async (req, res) => {
   }
 };
 module.exports.viewEditchapter = async (req, res) => {
-  res.render("components/chapter/editChapter");
+  res.render("pages/chapter/editChapter/editChapter");
 };
 // delete chapter
 module.exports.deleteChapter = async (req, res) => {
@@ -65,47 +66,62 @@ module.exports.deleteChapter = async (req, res) => {
 // view all chapter
 module.exports.getChapter = async (req, res) => {
   try {
-    // lấy thông tin người dùng
-    const cookies = req.cookies;
-    const user = await UserModel.findOne({ token: cookies.user });
-    // tạo biến chapter lấy thông tin từ data base thông qua id
-    const Chapter = await ChapterModel.findOne({ _id: req.params.id });
-    // tạo biến comments để tìm kiếm thông tin của comment thông qua chapter id
-    const comments = await CommentModel.find({ chapterID: req.params.id });
-
-    const users = [];
-    // const reactionNumber = [];
-
-    for (let i = 0; i < comments.length; i++) {
-      // console.log(comments[i].userID);
-      const user = await UserModel.findOne({ _id: comments[i].userID });
-      users.push(user);
-    }
-    // console.log(comments);
-    let reactions = [];
-    comments.map((comment) => {
-      comment.reaction.map((reaction) => {
-        if (reaction == user.id) reactions.push(reaction);
-      });
+    paginationChapter(req, res);
+    let Chapter = await paginationChapter(req, res);
+    // console.log(Chapter.Chapter);
+    const listChapter = await ChapterModel.find({
+      MangaID: Chapter.Chapter.MangaID,
+    }).limit(1);
+    // console.log(73, listChapter);
+    const list = await ChapterModel.find({
+      MangaID: Chapter.Chapter.MangaID,
     });
-    // console.log(reactions);
+    let total = await ChapterModel.count();
 
     if (!Chapter) {
       res.json({ message: "chapter not found" });
     } else {
-      res.render("components/chapter/viewChapter", {
-        Chapter,
-        comments,
-        users,
-        user,
-        reactions,
+      res.render("pages/chapter/viewChapter/viewChapter", {
+        list,
+        listChapter,
+        total: Math.ceil(total / 1),
+        comments: Chapter.comments,
+        users: Chapter.users,
+        user: Chapter.user,
+        reactions: Chapter.reactions,
       });
     }
   } catch (err) {
     res.json({ message: "loix" });
   }
 };
+// pagination chapter page
+module.exports.paginationChapter = async (req, res) => {
+  try {
+    paginationChapter(req, res);
+    let Chapter = await paginationChapter(req, res);
 
+    const comments = await CommentModel.find({
+      chapterID: Chapter.Chapter._id,
+    });
+
+    const listChapter = await ChapterModel.find({
+      MangaID: Chapter.Chapter.MangaID,
+    })
+      .skip(req.query.limit * (req.query.page - 1))
+      .limit(req.query.limit);
+    // console.log(116, listChapter);
+    res.render("pages/chapter/viewChapter/paginationChapter", {
+      listChapter: listChapter,
+      comments,
+      users: Chapter.users,
+      user: Chapter.user,
+      reactions: Chapter.reactions,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 //create a new reaction
 module.exports.createReaction = async (req, res) => {
   try {
@@ -127,14 +143,12 @@ module.exports.createReaction = async (req, res) => {
               reaction: reactions,
             }
           );
-          // console.log(159, update1Comment);
         } else {
           let reaction1 = reactions.filter((reaction) => {
             return reaction === user.id;
           });
-          console.log(135, reaction1);
-          console.log(reaction1[0] !== user.id);
-          console.log(137, user.id);
+          // console.log(135, reaction1);
+          // console.log(137, user.id);
           if (reaction1[0] !== user.id) {
             reactions.push(user.id);
             const update1Comment = await CommentModel.updateOne(
@@ -143,32 +157,16 @@ module.exports.createReaction = async (req, res) => {
                 reaction: reactions,
               }
             );
-            console.log(144, reaction1);
           } else {
-            console.log(147, reactions);
-            console.log(148, reactions[0] == user.id);
-            // for (let i = 0; i < reactions.length; i++) {
-            //   if (reactions[i] == user.id) {
-            //     reactions = reactions.splice(i, 1);
-            //     console.log(152, reactions);
-            //   }
-            // }
             reactions = reactions.filter((reaction) => reaction !== user.id);
-            console.log(152, reactions);
             const update1Comment = await CommentModel.updateOne(
               { _id: req.body.commentID },
               {
                 reaction: reactions,
               }
             );
-            console.log(156, reaction1);
           }
-
-          // if (reaction != user.id) {
         }
-        // reactions.map((reaction) => {
-        //   console.log(151, reaction);
-        // });
       });
     }
     res.json({

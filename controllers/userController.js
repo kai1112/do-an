@@ -4,14 +4,14 @@ const bcrypt = require("bcrypt");
 // register user
 module.exports.showLogin = async (req, res) => {
   try {
-    res.render("components/login");
+    res.render("components/login/login");
   } catch (e) {
     res.json(e);
   }
 };
 module.exports.showRegisters = async function (req, res) {
   try {
-    res.render("components/register");
+    res.render("components/register/register");
   } catch (error) {
     console.log(error);
   }
@@ -83,7 +83,7 @@ module.exports.login = async (req, res) => {
 module.exports.viewAllUsers = async (req, res) => {
   try {
     const user = await UserModel.find();
-    res.render("components/viewUser");
+    res.render("pages/user/viewUser");
   } catch (err) {
     res.json({ message: "khong the lay duoc use" });
   }

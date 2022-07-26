@@ -20,6 +20,8 @@ router.get("/createManga", controller.viewCreateManga);
 //view all manga
 router.get("/viewAllManga", controller.viewAllManga);
 router.get("/:id/viewDetails", controller.viewDetails);
+// view pagination
+router.get("/viewManga", controller.pagination);
 // editManga
 router.post("/:id/editManga", controller.editManga);
 router.get("/:id/editManga", controller.viewEditManga);

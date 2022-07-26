@@ -16,3 +16,11 @@ function deleteManga(id) {
   });
   console.log(data1);
 }
+
+async function pagination(page, limit) {
+  const data = await $.ajax({
+    url: `viewManga?page=${page}&limit=${limit}`,
+    type: "GET",
+  });
+  $(".pagination").html(data);
+}

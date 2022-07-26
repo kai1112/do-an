@@ -6,7 +6,7 @@ const fs = require("fs");
 // view displays manga
 module.exports.viewCreateManga = async (req, res) => {
   try {
-    res.render("components/manga/createManga");
+    res.render("pages/manga/createManga/createManga");
   } catch (err) {
     res.json(err);
   }
@@ -41,17 +41,35 @@ module.exports.createManga = async (req, res) => {
 // view manga
 module.exports.viewAllManga = async (req, res) => {
   try {
-    const mangas = await MangaModel.find({});
-    if (mangas == 0) {
+    let listManga = await MangaModel.find().limit(3);
+    // tong so manga
+    let total = await MangaModel.count();
+    if (listManga == 0) {
       res.json("ko co manga nao");
     } else {
-      res.render("components/manga/viewAllManga", { mangas });
+      res.render("pages/manga/viewAllManga/viewAllManga", {
+        listManga,
+        total: Math.ceil(total / 3),
+      });
     }
   } catch (err) {
     res.json(err);
   }
 };
 
+// pagination
+module.exports.pagination = async (req, res) => {
+  try {
+    const list = await MangaModel.find()
+      .skip(req.query.limit * (req.query.page - 1))
+      .limit(req.query.limit);
+    res.render("pages/manga/viewAllManga/pagination", { listManga: list });
+  } catch (err) {
+    res.json(err);
+  }
+};
+
+//view details manga
 module.exports.viewDetails = async (req, res) => {
   try {
     const cookies = req.cookies;
@@ -66,12 +84,11 @@ module.exports.viewDetails = async (req, res) => {
         followed = follows[i];
       }
     }
-
     if (!manga) {
       res.json("ko co manga nao");
     } else {
       if (followed.userID == user.id && followed.MangaID == manga.id) {
-        res.render("components/manga/viewDetails", {
+        res.render("pages/manga/viewDetailManga/viewDetailManga", {
           manga,
           chapter,
           followed,
@@ -80,23 +97,23 @@ module.exports.viewDetails = async (req, res) => {
         let followed = {
           id: "",
         };
-        res.render("components/manga/viewDetails", {
+        res.render("pages/manga/viewDetailManga/viewDetailManga", {
           manga,
           chapter,
           followed,
         });
       }
-      //   // console.log(manga);
+      console.log(manga);
     }
   } catch (err) {
-    res.json(err);
+    res.json("err");
   }
 };
 
 //edit manga
 module.exports.viewEditManga = async (req, res) => {
   try {
-    res.render("components/manga/editManga");
+    res.render("pages/manga/editManga/editManga");
   } catch (err) {
     res.json(err);
   }
